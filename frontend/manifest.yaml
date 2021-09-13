@@ -1,0 +1,4 @@
+applications:
+  - name: sample-loan-frontend-app
+    memory: 100M
+    command: node server.js
