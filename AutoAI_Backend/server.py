@@ -1,8 +1,5 @@
 from flask import Flask
 import requests
-import os
-import json
-
 app = Flask(__name__)
 
 @app.route("/getPrediction")
