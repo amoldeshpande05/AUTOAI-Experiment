@@ -11,5 +11,4 @@ app.listen(port, (req,res) => {
   console.log("Listening on the port  : ",port)
 })
 
-
 app.use(express.static(__dirname));
