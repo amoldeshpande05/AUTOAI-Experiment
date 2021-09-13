@@ -25,8 +25,6 @@ def index():
     "message": "Loan Approved!!", 
     } 
 
-
-
     return  json.dumps(dictionary)
         
 port = os.getenv('VCAP_APP_PORT', '8080')
