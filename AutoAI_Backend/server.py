@@ -1,27 +1,46 @@
-from flask import Flask
+from flask import Flask,request
 import requests
+import json
+import os
 app = Flask(__name__)
+
+
+@app.route("/")
+def landing():
+   return "Hello World!"
+
+
+
 
 @app.route("/getPrediction")
 def index():
     # NOTE: you must manually set API_KEY below using information retrieved from your IBM Cloud account.
-    API_KEY = "eRKyWEXWZLGx5VuQp9TGrvSs5JAxzPlIgrwV3qQH4PTr"
+    API_KEY = "6FRDmF9DhIK1Iw7IH9xM9vk8CaRfRhNH_cxKvu1eS3TL"
+
+    email = request.args.get("email");
+    Gender = request.args.get("Gender");
+    education = request.args.get("education");
+    dependents = request.args.get("dependents");
+    Self_Employed = request.args.get("Self_Employed");
+    LoanAmount = request.args.get("LoanAmount");
+    Loan_Amount_Term = request.args.get("Loan_Amount_Term");
+    Credit_History = request.args.get("Credit_History");
+    ApplicantIncome = request.args.get("ApplicantIncome");
+    married = request.args.get("married");
+    Property_Area = request.args.get("Property_Area");
+
+
     token_response = requests.post('https://iam.cloud.ibm.com/identity/token', data={"apikey": API_KEY, "grant_type": 'urn:ibm:params:oauth:grant-type:apikey'})
     mltoken = token_response.json()["access_token"]
+    # payload_scoring = {"input_data": [{"fields": ["Gender","Married","Dependents","Education","Self_Employed","ApplicantIncome","LoanAmount","Loan_Amount_Term","Credit_History","Property_Area"], "values": [[ 1, 1, 1, 1, 0, 4583, 128, 360, 1, "Rural" ]]}]}
+    payload_scoring = {"input_data": [{"fields": ["Gender","Married","Dependents","Education","Self_Employed","ApplicantIncome","LoanAmount","Loan_Amount_Term","Credit_History","Property_Area"], "values": [[ Gender, married, dependents, education, Self_Employed, ApplicantIncome, LoanAmount, Loan_Amount_Term, Credit_History, Property_Area ]]}]}
 
-    # NOTE: manually define and pass the array(s) of values to be scored in the next line
-    payload_scoring = {"input_data": [{"fields": ["Loan_ID","Gender","Married","Dependents","Education","Self_Employed","ApplicantIncome","CoapplicantIncome","LoanAmount","Loan_Amount_Term","Credit_History","Property_Area"], "values": [[ "LP001999", "Male", "Yes", "0", "Not Graduate", "No", 2589, 2358, 129, 360, 1, "Urban" ]]}]}
-
-    response_scoring = requests.post('https://eu-gb.ml.cloud.ibm.com/ml/v4/deployments/d86b6736-b617-471b-b27d-65f27ddf20a2/predictions?version=2021-09-13', json=payload_scoring, headers={'Authorization': 'Bearer ' + mltoken})
-
-    print("response_scoring  : ",response_scoring.json())
-    # your logic ... 
-
+    response_scoring = requests.post('https://eu-gb.ml.cloud.ibm.com/ml/v4/deployments/65e0afca-ba80-4df2-9f69-6b5d086f1c39/predictions?version=2021-09-16', json=payload_scoring, headers={'Authorization': 'Bearer ' + mltoken})
     dictionary ={ 
     "status": "200", 
-    "message": "Loan Approved!!", 
+    "response_scoring": response_scoring.json()['predictions'][0]['values'][0][0],
+    "probability" :response_scoring.json()['predictions'][0]['values'][0][1][1]
     } 
-
     return  json.dumps(dictionary)
         
 port = os.getenv('VCAP_APP_PORT', '8080')

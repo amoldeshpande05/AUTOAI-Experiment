@@ -1,0 +1,50 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: auto-ai-v2
+  labels:
+    app: flask
+spec:
+  selector:
+    matchLabels:
+      app: flask
+  template:
+    metadata:
+      labels:
+        app: flask
+    spec:
+      containers:
+      - name: auto-ai-v2
+        image: amoldeshpande/autoai:latest
+        ports:
+        - containerPort: 8080
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: auto-ai-v2-service
+spec:
+  selector:
+    app: flask
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+    <!-- nodePort: 32020 -->
+  type: NodePort
+
+---
+
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: auto-ai-url
+spec:
+  path: /
+  to:
+    kind: Service
+    name: auto-ai-v2-service
+  port:
+    targetPort: 8080
