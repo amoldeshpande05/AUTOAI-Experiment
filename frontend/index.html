@@ -170,7 +170,8 @@
 
         // http://localhost:8080/getPrediction?email=easd&Gender=0&education=0&Dependents=3&Self_Employed=0&ApplicantIncome=0&LoanAmount=123&Loan_Amount_Term=120&Credit_History=0&Property_Area=urban
 
-        fetch('http://auto-ai-url-default.integro-sandbox-cluster-dec238a6ba0c64ed92191aa193d448c3-0000.us-south.containers.appdomain.cloud/getPrediction?email='+email+'&Gender='+Gender+'&education='+education+'&dependents='+dependents+'&Self_Employed='+Self_Employed+'&LoanAmount='+LoanAmount+'&married='+married+'&Loan_Amount_Term='+Loan_Amount_Term+'&Credit_History='+Credit_History+'&ApplicantIncome='+ApplicantIncome+'&Property_Area='+Property_Area).then(function(response) {
+        fetch('http://auto-ai-url-default.integro-sandbox-cluster-dec238a6ba0c64ed92191aa193d448c3-0000.us-south.containers.appdomain.cloud/getPrediction?email='+email+'&Gender='+Gender+'&education='+education+'&dependents='+dependents+'&Self_Employed='+Self_Employed+'&LoanAmount='+LoanAmount+'&married='+married+'&Loan_Amount_Term='+Loan_Amount_Term+'&Credit_History='+Credit_History+'&ApplicantIncome='+ApplicantIncome+'&Property_Area='+Property_Area,{mode:'cors',
+        headers: {}}).then(function(response) {
           return response.json();
         }).then(function(data) {
           if(data.status === 200){
